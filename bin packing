@@ -1,0 +1,50 @@
+#include <stdlib.h>
+int firstFit(int items[], int n, int capacity) {
+    int *bin_rem = (int *)malloc(n * sizeof(int));  
+    int bin_count = 0;
+    for (int i = 0; i < n; i++) {
+        int placed = 0;
+        if (items[i] > capacity) {
+            printf("Item %d is too large to fit in any bin.\n", items[i]);
+            continue;
+        }
+        for (int j = 0; j < bin_count; j++) {
+            if (bin_rem[j] >= items[i]) {
+               bin_rem[j] -= items[i];
+                placed = 1;
+                break;
+            }
+        }
+        if (!placed) {
+            bin_rem[bin_count] = capacity - items[i];
+            bin_count++;
+        }
+    }
+    free(bin_rem);  
+    return bin_count;
+}
+int main() {
+    int n, capacity;
+    printf("Enter number of items: ");
+    scanf("%d", &n);
+    if (n <= 0) {
+        printf("Invalid number of items.\n");
+        return 0;
+    }
+    int *items = (int *)malloc(n * sizeof(int));
+    printf("Enter item sizes:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &items[i]);
+    }
+    printf("Enter bin capacity: ");
+    scanf("%d", &capacity);
+    if (capacity <= 0) {
+        printf("Invalid bin capacity.\n");
+        free(items);
+        return 0;
+    }
+    int result = firstFit(items, n, capacity);
+    printf("Minimum number of bins required: %d\n", result);
+    free(items);
+    return 0;
+}
